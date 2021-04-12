@@ -137,6 +137,8 @@ if(isset($_POST['register_button'])){
     }
 
 }
-session_unset();
+    if(empty($err_array)){
+        session_unset();
+    }
 
 ?>
