@@ -10,13 +10,12 @@
     if(isset($_SESSION['username'])){
         $userLoggedIn = $_SESSION['username'];
         $userLoggedId = $_SESSION['user_id'];
-        $username_details = mysqli_query($con, "SELECT * from usernames where user_name='$userLoggedIn'");
+        
+        $user_obj = new User($con,$userLoggedIn);
 
-        $user_details = mysqli_query($con,"SELECT * FROM users where user_id='$userLoggedId'");
+        $username = $user_obj->getUserNameDetails();
 
-        $username = mysqli_fetch_array($username_details);
-
-        $user = mysqli_fetch_array($user_details);
+        $user = $user_obj->getUserDetails();
     }
     else{
         header("Location: login.php");
@@ -36,11 +35,25 @@
           integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <!-- Regular css -->
     <link rel="stylesheet" href="./includes/style.css">
+    <!-- Jquery js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+     integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" 
+     crossorigin="anonymous">
+    </script>
+    <script src="./assets/js/profile.js"></script>
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" 
-            integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" 
-            crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js" 
+    integrity="sha512-XKa9Hemdy1Ui3KSGgJdgMyYlUg1gM+QhL6cnlyTe2qzMCYm4nAZ1PsVerQzTTXzonUR+dmswHqgJPuwCq1MaAg==" 
+    crossorigin="anonymous">
+    </script>
+    <!-- Bootbox Js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js" 
+    integrity="sha512-RdSPYh1WA6BF0RhpisYJVYkOyTzK4HwofJ3Q7ivt/jkpW6Vc8AurL1R+4AUcvn9IwEKAPm/fk7qFZW3OuiUDeg==" 
+    crossorigin="anonymous"></script>
+    <!-- Axios Js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" 
+    integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" 
+    crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="layout_bar">
@@ -54,7 +67,7 @@
                 <i class="fas fa-user-friends"></i> 
                 Friends
             </a>
-            <a style="padding-right: 17px;" href="#">
+            <a style="padding-right: 17px;" href="messages.php">
                 <i class="fab fa-facebook-messenger"></i>
                 Messages
             </a>
@@ -69,7 +82,7 @@
             <nav>
                 <a  href="index.php">
                     <i class="fas fa-home"></i> 
-                    <!-- Home -->
+                    Home
                 </a>
             </nav>
             <nav>
@@ -79,15 +92,9 @@
                 </a>
             </nav>
             <nav>
-                <a href="#">
-                    <i class="fas fa-bell"></i> 
-                    <!-- Notifications -->
-                </a>
-            </nav>
-            <nav>
                 <a href="./includes/handlers/logout.php">
                     <i class="fas fa-sign-out-alt"></i>
-                    <!-- Signout -->
+                    Signout
                 </a>
             </nav>
         </div>

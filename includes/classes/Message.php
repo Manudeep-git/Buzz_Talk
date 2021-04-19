@@ -8,47 +8,72 @@ class Message {
 		$this->user_obj = new User($con, $user);
 	}
 
-	public function getMostRecentUser() {
+	//Latest message- user can be a sender or recipient
+	public function getMostRecentInteraction() {
 		$userLoggedIn = $this->user_obj->getUsername();
+		$userLoggedId = $this->user_obj->getUserId();
+		
+		//Last interaction
+		$query = mysqli_query($this->con, "SELECT from_uid, to_uid
+											FROM messages 
+											WHERE from_uid='$userLoggedId' OR  to_uid='$userLoggedId' 
+											ORDER BY message_id DESC LIMIT 1");
 
-		$query = mysqli_query($this->con, "SELECT user_to, user_from FROM messages WHERE user_to='$userLoggedIn' OR user_from='$userLoggedIn' ORDER BY id DESC LIMIT 1");
-
-		if(mysqli_num_rows($query) == 0)
+		//If no messages , return false
+		if(mysqli_num_rows($query) === 0)
 			return false;
 
 		$row = mysqli_fetch_array($query);
-		$user_to = $row['user_to'];
-		$user_from = $row['user_from'];
+		$user_to = $row['to_uid'];
+		$user_from = $row['from_uid'];
 
-		if($user_to != $userLoggedIn)
-			return $user_to;
-		else 
-			return $user_from;
+		//If userLogged is not a recipient return to_uid
+		if($user_to !== $userLoggedId){
+			$user_to_query = mysqli_query($this->con,"SELECT user_name from usernames where user_id='$user_to'");
+			$user_to_row = mysqli_fetch_array($user_to_query);
+			$user_to_name = $user_to_row['user_name'];
+			return $user_to_name;
+		}
+		else{
+			$user_from_query = mysqli_query($this->con,"SELECT user_name from usernames where user_id='$user_from'");
+			$user_from_row = mysqli_fetch_array($user_from_query);
+			$user_from_name = $user_from_row['user_name'];
+			return $user_from_name;
+		}
 
 	}
 
 	public function sendMessage($user_to, $body, $date) {
 
 		if($body != "") {
-			$userLoggedIn = $this->user_obj->getUsername();
-			$query = mysqli_query($this->con, "INSERT INTO messages VALUES('', '$user_to', '$userLoggedIn', '$body', '$date', 'no', 'no', 'no')");
+			$userLoggedId = $this->user_obj->getUserId();
+			$query = mysqli_query($this->con, "INSERT INTO messages VALUES('', '$userLoggedId', '$user_to', '$body', '$date',0)");
 		}
 	}
 
-	public function getMessages($otherUser) {
+	public function getMessages($other_User_Name) {
+		$userLoggedId = $this->user_obj->getUserId();
 		$userLoggedIn = $this->user_obj->getUsername();
 		$data = "";
 
-		$query = mysqli_query($this->con, "UPDATE messages SET opened='yes' WHERE user_to='$userLoggedIn' AND user_from='$otherUser'");
+		$other_user_obj = new User($this->con,$other_User_Name);
+		$other_user_id = $other_user_obj->getUserId();
 
-		$get_messages_query = mysqli_query($this->con, "SELECT * FROM messages WHERE (user_to='$userLoggedIn' AND user_from='$otherUser') OR (user_from='$userLoggedIn' AND user_to='$otherUser')");
+		//$query = mysqli_query($this->con, "UPDATE messages SET opened='yes' WHERE user_to='$userLoggedIn' AND user_from='$otherUser'");
 
-		while($row = mysqli_fetch_array($get_messages_query)) {
-			$user_to = $row['user_to'];
-			$user_from = $row['user_from'];
-			$body = $row['body'];
+		//userLogged could be a recipient or sender
+		$get_messages_query = mysqli_query($this->con, "SELECT * 
+														FROM messages 
+														WHERE (to_uid='$userLoggedId' AND from_uid='$other_user_id') 
+														OR (from_uid='$userLoggedId' AND to_uid='$other_user_id')");
 
-			$div_top = ($user_to == $userLoggedIn) ? "<div class='message' id='green'>" : "<div class='message' id='blue'>";
+		while($row = mysqli_fetch_array($get_messages_query)) 
+		{
+			$user_to = $row['to_uid'];
+			$user_from = $row['from_uid'];
+			$body = $row['msg_content'];
+
+			$div_top = ($user_to == $userLoggedId) ? "<div class='message' id='green'>" : "<div class='message' id='blue'>";
 			$data = $data . $div_top . $body . "</div><br><br>";
 		}
 		return $data;
@@ -68,7 +93,7 @@ class Message {
 		$end_date = new DateTime($date_time_now); //Current time
 		$interval = $start_date->diff($end_date); //Difference between dates 
 		if($interval->y >= 1) {
-			if($interval == 1)
+			if($interval === 1)
 				$time_message = $interval->y . " year ago"; //1 year ago
 			else 
 				$time_message = $interval->y . " years ago"; //1+ year ago
@@ -133,6 +158,7 @@ class Message {
 		return $details_array;
 	}
 
+	////-------------------- Not Looked at
 	public function getConvos() {
 		$userLoggedIn = $this->user_obj->getUsername();
 		$return_string = "";

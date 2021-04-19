@@ -124,10 +124,12 @@ if(isset($_POST['register_button'])){
         //hash password
         $reg_password = md5($reg_password);
 
+        
         //Inserting values into database
         $query = mysqli_query($con,
-            "INSERT INTO users values('','$fname','$lname','$reg_em','$b_date','$date','$reg_password','no');"               
+            "INSERT INTO users values('','$fname','$lname','$reg_em','$b_date','$date','$reg_password',null,1);"               
         );
+
 
         $last_insert_id = mysqli_insert_id($con);
 

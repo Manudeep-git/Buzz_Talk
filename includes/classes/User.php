@@ -6,7 +6,12 @@ class User {
 	//usernames table
 	private $usernames;
 	private $con;
-	private $friend_array;
+	//friends
+	private $friend_array = array();
+	private $followers_array = array();
+	private $following_array = array();
+
+	
 
 	// public function __construct($con, $user){
 	// 	$this->con = $con;
@@ -17,13 +22,20 @@ class User {
 	public function __construct($con,$user)
 	{
 		$this->con= $con;
-		$this->friend_array = array();
 		//$user passed in here is the loggedin user object
 		$username_details = mysqli_query($con, "SELECT * FROM usernames WHERE user_name='$user'");
 		$this->usernames = mysqli_fetch_array($username_details);
 		$this->userId= $this->usernames['user_id'];
 		$user_details_query = mysqli_query($con, "SELECT * FROM users WHERE user_id='$this->userId'");
 		$this->user = mysqli_fetch_array($user_details_query);
+	}
+
+	public function getUserDetails(){
+		return $this->user;
+	}
+
+	public function getUserNameDetails(){
+		return $this->usernames;
 	}
 
 	public function getUserId(){
@@ -35,31 +47,22 @@ class User {
 	}
 
 	public function getNumContents() {
-		$query = mysqli_query($this->con, "SELECT * FROM contents WHERE user_id='$this->userId'");
+		$query = mysqli_query($this->con, "SELECT * FROM contents WHERE user_id='$this->userId' and deleted=0");
 		$contents = mysqli_num_rows($query);
 		return $contents;
 	}
 
 	public function getFirstAndLastName() {
-		$query = mysqli_query($this->con, "SELECT first_name, last_name FROM users WHERE user_id='$this->userId'");
-		$row = mysqli_fetch_array($query);
-		return $row['first_name'] . " " . $row['last_name'];
+		return $this->user['first_name'] . " " . $this->user['last_name'];
 	}
 
 	public function getProfilePic() {
-		$userId = $this->user['user_id'];
-		$query = mysqli_query($this->con, "SELECT profile_pic FROM users WHERE user_id='$userId'");
-		$row = mysqli_fetch_array($query);
-		return $row['profile_pic'];
+		return $this->user['profile_pic'];
 	}
 
 
 	public function isClosed() {
-		$userId = $this->user['user_id'];
-		$query = mysqli_query($this->con, "SELECT is_active FROM users WHERE user_id='$userId'");
-		$row = mysqli_fetch_array($query);
-
-		if($row['is_active'] === 0)
+		if($this->user['is_active'] === 0)
 			return true;
 		else 
 			return false;
@@ -68,22 +71,47 @@ class User {
 
 	//Store all the followers and following of current user in a array
 	public function getFriendArray() {
-		$userId = $this->userId;
+		$userId = $this->getUserId();
 		//$friend_names_aray = array();
 		$query = mysqli_query($this->con, "SELECT * 
 										   FROM follows
 										   WHERE user_id='$userId'
 										   OR follower_id='$userId'");
 		while($row = mysqli_fetch_array($query)){
-			if($row['user_id'] == $userId){
+			if($row['user_id'] === $userId){
 				array_push($this->friend_array,$row['follower_id']);
 			}
-			else{
+			else if($row['follower_id'] === $userId){
 				array_push($this->friend_array,$row['user_id']);
 			}
 		}
 		array_push($this->friend_array,$userId);
 		return $this->friend_array;
+	}
+
+	public function getFollowersArray(){
+		$userId = $this->getUserId();
+		$query = mysqli_query($this->con, "SELECT * 
+										   FROM follows
+										   WHERE user_id='$userId'");
+		while($row = mysqli_fetch_array($query)){
+			array_push($this->followers_array,$row['follower_id']);
+		}
+
+		return $this->followers_array;
+	}
+
+	public function getFollowingArray(){
+		$userId = $this->getUserId();
+		$query = mysqli_query($this->con, "SELECT * 
+										   FROM follows
+										   WHERE follower_id='$userId'");
+
+		while($row = mysqli_fetch_array($query)){
+			array_push($this->following_array,$row['user_id']);
+		}
+
+		return $this->following_array;
 	}
 
 
@@ -98,76 +126,80 @@ class User {
 		}
 	}
 
-	//-----------------------------------------------------------------------------------------------
-
-	//Not Looked at
-	public function didReceiveRequest($user_from) {
-		$user_to = $this->user['username'];
-		$check_request_query = mysqli_query($this->con, "SELECT * FROM friend_requests WHERE user_to='$user_to' AND user_from='$user_from'");
-		if(mysqli_num_rows($check_request_query) > 0) {
+	//Check if user is following logged in user
+	public function isFollowedBy($userId) {
+		$followers_array = $this->getFollowersArray();
+		if(in_array($userId,$followers_array)){
 			return true;
 		}
-		else {
+		else{
 			return false;
 		}
 	}
 
-	//Not Looked at
-	public function didSendRequest($user_to) {
-		$user_from = $this->user['username'];
-		$check_request_query = mysqli_query($this->con, "SELECT * FROM friend_requests WHERE user_to='$user_to' AND user_from='$user_from'");
-		if(mysqli_num_rows($check_request_query) > 0) {
+	public function isFollowing($userId) {
+		$following_array = $this->getFollowingArray();
+		if(in_array($userId,$following_array)){
 			return true;
 		}
-		else {
+		else{
 			return false;
 		}
 	}
 
-	//Not Looked at
-	public function removeFollower($user_to_remove) {
-		$logged_in_user = $this->user['username'];
-
-		$query = mysqli_query($this->con, "SELECT friend_array FROM users WHERE username='$user_to_remove'");
-		$row = mysqli_fetch_array($query);
-		$friend_array_username = $row['friend_array'];
-
-		$new_friend_array = str_replace($user_to_remove . ",", "", $this->user['friend_array']);
-		$remove_friend = mysqli_query($this->con, "UPDATE users SET friend_array='$new_friend_array' WHERE username='$logged_in_user'");
-
-		$new_friend_array = str_replace($this->user['username'] . ",", "", $friend_array_username);
-		$remove_friend = mysqli_query($this->con, "UPDATE users SET friend_array='$new_friend_array' WHERE username='$user_to_remove'");
+	public function getFollowers(){
+		$userId = $this->userId;
+		$query = mysqli_query($this->con, "SELECT * 
+										   FROM follows
+										   WHERE user_id='$userId'");
+		return mysqli_num_rows($query);
 	}
 
-	//Not Looked at
-	public function sendRequest($user_to) {
-		$user_from = $this->user['username'];
-		$query = mysqli_query($this->con, "INSERT INTO friend_requests VALUES('', '$user_to', '$user_from')");
+	public function getFollowing(){
+		$userId = $this->userId;
+		$query = mysqli_query($this->con, "SELECT * 
+										   FROM follows
+										   WHERE follower_id='$userId'");
+		return mysqli_num_rows($query);
 	}
 
-	//Not Looked at
-	public function getMutualFriends($user_to_check) {
-		$mutualFriends = 0;
-		$user_array = $this->user['friend_array'];
-		$user_array_explode = explode(",", $user_array);
 
-		$query = mysqli_query($this->con, "SELECT friend_array FROM users WHERE username='$user_to_check'");
-		$row = mysqli_fetch_array($query);
-		$user_to_check_array = $row['friend_array'];
-		$user_to_check_array_explode = explode(",", $user_to_check_array);
+	public function unFollow($user_to_remove) {
+		$logged_in_user = $this->getUserId();
 
-		foreach($user_array_explode as $i) {
-
-			foreach($user_to_check_array_explode as $j) {
-
-				if($i == $j && $i != "") {
-					$mutualFriends++;
-				}
-			}
-		}
-		return $mutualFriends;
-
+		$query = mysqli_query($this->con, "DELETE FROM FOLLOWS WHERE user_id='$user_to_remove' and follower_id='$logged_in_user'");
 	}
+
+	public function follow($user_to_follow){
+		$logged_in_user = $this->getUserId();
+
+		$query = mysqli_query($this->con, "INSERT INTO FOLLOWS VALUES('$user_to_follow','$logged_in_user')");
+		
+	}
+
+	// //Not Looked at
+	// public function getMutualFriends($user_to_check) {
+	// 	$mutualFriends = 0;
+	// 	$user_array = $this->user['friend_array'];
+	// 	$user_array_explode = explode(",", $user_array);
+
+	// 	$query = mysqli_query($this->con, "SELECT friend_array FROM users WHERE username='$user_to_check'");
+	// 	$row = mysqli_fetch_array($query);
+	// 	$user_to_check_array = $row['friend_array'];
+	// 	$user_to_check_array_explode = explode(",", $user_to_check_array);
+
+	// 	foreach($user_array_explode as $i) {
+
+	// 		foreach($user_to_check_array_explode as $j) {
+
+	// 			if($i == $j && $i != "") {
+	// 				$mutualFriends++;
+	// 			}
+	// 		}
+	// 	}
+	// 	return $mutualFriends;
+
+	// }
 
 
 

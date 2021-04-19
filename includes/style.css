@@ -37,7 +37,7 @@ body{
     font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     top: 9px;
     /* padding-top: 0.6%; */
-    text-shadow: #7386E2 0.5px 0.5px 0.5px;
+    text-shadow: #7386E2 0.5px 0.5px 0px;
 }
 
 a:hover{
@@ -52,7 +52,7 @@ a:hover{
 }
 
 .container a:hover{
-    border-bottom: 7px solid lightcoral;
+    border-bottom: 3px solid lightcoral;
 }
 
 .layout_bar nav{
@@ -70,12 +70,12 @@ nav a{
 }
 
 nav a:hover{
-    border-bottom: 7px solid #e67e22;
+    border-bottom: 3px solid #e67e22;
 }
 
 .wrapper{
-    margin: 5px;
-    margin-left: 60px;
+    margin: 0 auto;
+    /* margin-left: 60px; */
     top: 50px;
     position: relative;
     padding: 0 10px;
@@ -92,38 +92,34 @@ nav a:hover{
     -moz-border-radius: 6px;
     -ms-border-radius: 6px;
     -o-border-radius: 6px;
-    box-shadow: 2px 1px #d3d3d3;
+    box-shadow: 2px 2px 1px #d3d3d3;
     z-index: -1;
 }
 
 .user_details{
     width: 150px;
-    height: 180px;
+    height: 220px;
     float: left;
     margin-bottom: 20px;
 }
 
 .user-image{
     border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    -o-border-radius: 5px;
-    border-bottom: 2px solid silver;
+    height: 120px;
+    margin-right: 5px;
 }
 
 .user_details_left_right{
     width: 150px;
-    padding-top: 5px;
     display: inline-table;
     position: absolute;
 }
 
 .main_column{
     float: right;
-    width: 70%;
+    width: 80%;
     z-index: -1;
-    min-height: 60px;
+    min-height: 170px;
 }
 
 .post_form{
@@ -134,10 +130,6 @@ nav a:hover{
     width: 80%;
     height: 60px;
     border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    -o-border-radius: 5px;
     margin-right: 5px;
     border: 1px solid #D3D3DE;
     font-size: 15px;
@@ -182,4 +174,145 @@ nav a:hover{
 
 .post_profile_pic img {
 	border-radius: 5px;
+}
+
+.profile_left {
+	top: -10px;
+	width: 17%;
+	max-width: 240px;
+	min-width: 130px;
+	/* height: 100%; */
+	float: left;
+	position: relative;
+	background-color: #37B0E9;
+	border-right: 10px solid #83D6FE;
+	color: #CBEAF8;
+	margin-right: 20px;
+}
+
+.profile_left img {
+	min-width: 80px;
+	width: 55%;
+	margin: 20px;
+	border: 5px solid #83D6FE;
+	border-radius: 100px;
+}
+
+.profile_info {
+	display: list-item;
+	background-color: #2980b9;
+	width: 100%;
+	padding: 10px 0 10px 0;
+}
+
+.profile_info p {
+	margin: 0 0 0 20px;
+	word-wrap: break-word;
+}
+
+.danger {
+	background-color: #e74c3c;
+}
+.warning {
+	background-color: #f0ad4e;
+}
+.default {
+	background-color: #bdc3c7;
+}
+.success {
+	background-color: #2ecc71;
+}
+.info {
+	background-color: #3498db;
+}
+.deep_blue {
+	background-color: #0043f0;
+}
+
+.profile_left input[type="submit"] {
+	width: 90%;
+	height: 30px;
+	border-radius: 5px;
+	margin: 7px 0 0 7px;
+	border: none;
+	color: #fff;
+}
+
+.delete_button {
+	height: 28px;
+	width: 100px;
+	float: right;
+	border-radius: 4px;
+	right: -15px;
+	position: relative;
+}
+
+.profile_main_column {
+	min-width: 675px;
+	float: left;
+	width: 80%;
+	z-index: -1;
+
+}
+
+.profile_info_bottom {
+	margin: 10 0 0 7px;
+
+}
+
+#message_textarea {
+	width: 85%;
+	margin-right: 8px;
+	border-radius: 5px;
+	border: 1px solid #D3D3D3;
+	font-size: 12px;
+}
+#message_submit {
+	height: 41px;
+	width: 120px;
+	margin: 0;
+	position: absolute;
+	border:none;
+	background-color: #20AAE5;
+	color: #156588;
+	border-radius: 5px;
+	font-family: 'Bellota-BoldItalic', sans-serif;
+	text-shadow: #73B6E2 0.5px 0.5px 0px;
+}
+
+.message {
+	border: 1px solid #000;
+	border-radius: 5px;
+	padding: 5px 10px;
+	display: inline-block;
+	color: #fff;
+}
+
+ .message#blue {
+	background-color: darkmagenta;
+	border-color: #2980b9;
+	float: right;
+	margin-bottom: 3px; 
+}
+ .message#green {
+	background-color: #2ecc71;
+	border-color: #27ae60;
+	float: left;
+	padding-bottom: 6px; 
+}
+
+.loaded_messages {
+	height: 65%;
+	min-height: 300px;
+	max-height: 400px;
+	overflow: scroll;
+	margin-bottom: 10px;
+} 
+
+.postedImage img {
+	max-height: 300px;
+    max-width: 100%;
+    display: block;
+	padding-top: 2%;
+    margin: 5px auto;
 }
