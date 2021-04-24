@@ -121,7 +121,13 @@ nav a:hover{
     z-index: -1;
     min-height: 170px;
 }
-
+.settings_main_column{
+	float:none;
+	margin-left: 10%;
+    width: 75%;
+    z-index: -1;
+    min-height: 170px;
+}
 .post_form{
     width: 100%;   
 }
@@ -309,10 +315,112 @@ nav a:hover{
 	margin-bottom: 10px;
 } 
 
+.loaded_conversations {
+	max-height: 216px;
+	width: 300px;
+	float: left;
+}
+
+.user_found_messages {
+	border-bottom: 1px solid #D3D3D3;
+	padding: 8px 8px 10px 8px;
+}
+
+.user_found_messages:hover {
+	background-color: #D3D3D3;
+}
+
+.user_found_messages img {
+	height: 35px;
+	float: left;
+}
+
 .postedImage img {
 	max-height: 300px;
     max-width: 100%;
     display: block;
 	padding-top: 2%;
     margin: 5px auto;
+}
+
+.small_profile_pic {
+	height: 55px;
+    margin: 1px 12px 0 2px;
+    float: left;
+}
+
+#settings_input {
+	border: 1px solid #ccc;
+    height: 20px;
+    padding: 4px 6px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.comment_section {
+	width: 250px;
+	padding: 0 5px 5px 5px;
+}
+
+.comment_section img {
+	margin: 0 3px 3px 3px;
+	border-radius: 3px;
+}
+
+#comment_form textarea {
+	border-color: #D3D3D3;
+	width: 85%;
+	height: 35px;
+	border-radius: 5px;
+	color: #616060;
+	font-size: 14px;
+	margin: 3px 3px 3px 5px;
+}
+#comment_form input[type="submit"] {
+	border:none;
+	background-color: #20AAE5;
+	color: #156588;
+	border-radius: 5px;
+	width: 13%;
+	height: 35px;
+	margin-top: 3px;
+	position: absolute;
+	font-family: 'Bellota-BoldItalic', sans-serif;
+	text-shadow: #73B6E2 0.5px 0.5px 0px;
+}
+
+
+
+.newsfeedPostOptions {
+	padding: 0px;
+	text-decoration: none;
+	color:#20AAE5;
+	border:none;
+}
+
+.newsfeedPostOptions iframe {
+	border: 0px;
+	height: 40px;
+	width: 250px;
+	border-bottom: 30%;
+}
+
+.comment_like {
+	background-color: transparent;
+	border: none;
+	font-size: 14px;
+	color: #3498db;
+	padding: 0;
+	height: auto;
+	width: auto;
+	padding-top: 20%;
+}
+
+
+
+.like_value {
+	display: inline;
+	font-size: 14px;
 }

@@ -1,7 +1,7 @@
 <?php 
 include("includes/header.php");
 
-$profile_id = $user['username'];
+$profile_id = $user['user_id'];
 $imgSrc = "";
 $result_path = "";
 $msg = "";
@@ -11,7 +11,7 @@ $msg = "";
 ***********************************************************/
 	if (!isset($_POST['x']) && !isset($_FILES['image']['name']) ){
 		//Delete users temp image
-			$temppath = 'assets/images/profile_pics/'.$profile_id.'_temp.jpeg';
+			$temppath = './assets/images/profile_pics/'.$profile_id.'_temp.jpeg';
 			if (file_exists ($temppath)){ @unlink($temppath); }
 	} 
 

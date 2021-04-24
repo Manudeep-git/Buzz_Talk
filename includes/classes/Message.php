@@ -59,8 +59,6 @@ class Message {
 		$other_user_obj = new User($this->con,$other_User_Name);
 		$other_user_id = $other_user_obj->getUserId();
 
-		//$query = mysqli_query($this->con, "UPDATE messages SET opened='yes' WHERE user_to='$userLoggedIn' AND user_from='$otherUser'");
-
 		//userLogged could be a recipient or sender
 		$get_messages_query = mysqli_query($this->con, "SELECT * 
 														FROM messages 
@@ -80,16 +78,25 @@ class Message {
 	}
 
 	public function getLatestMessage($userLoggedIn, $user2) {
+
+		$userLoggedId = $this->user_obj->getUserId();
 		$details_array = array();
 
-		$query = mysqli_query($this->con, "SELECT body, user_to, date FROM messages WHERE (user_to='$userLoggedIn' AND user_from='$user2') OR (user_to='$user2' AND user_from='$userLoggedIn') ORDER BY id DESC LIMIT 1");
+		$other_user_obj = new User($this->con,$user2);
+		$other_user_id = $other_user_obj->getUserId();
+
+		$query = mysqli_query($this->con, "SELECT msg_content, to_uid, from_uid,created_at
+										   FROM messages 
+										   WHERE (to_uid='$userLoggedId' AND from_uid='$other_user_id')
+										   OR (to_uid='$other_user_id' AND from_uid='$userLoggedId') 
+										   ORDER BY message_id DESC LIMIT 1");
 
 		$row = mysqli_fetch_array($query);
-		$sent_by = ($row['user_to'] == $userLoggedIn) ? "They said: " : "You said: ";
+		$sent_by = ($row['to_uid'] == $userLoggedId) ? "They said: " : "You said: ";
 
 		//Timeframe
 		$date_time_now = date("Y-m-d H:i:s");
-		$start_date = new DateTime($row['date']); //Time of post
+		$start_date = new DateTime($row['created_at']); //Time of message
 		$end_date = new DateTime($date_time_now); //Current time
 		$interval = $start_date->diff($end_date); //Difference between dates 
 		if($interval->y >= 1) {
@@ -152,22 +159,29 @@ class Message {
 		}
 
 		array_push($details_array, $sent_by);
-		array_push($details_array, $row['body']);
+		array_push($details_array, $row['msg_content']);
 		array_push($details_array, $time_message);
 
 		return $details_array;
 	}
 
-	////-------------------- Not Looked at
 	public function getConvos() {
 		$userLoggedIn = $this->user_obj->getUsername();
+		$userLoggedId = $this->user_obj->getUserId();
 		$return_string = "";
 		$convos = array();
 
-		$query = mysqli_query($this->con, "SELECT user_to, user_from FROM messages WHERE user_to='$userLoggedIn' OR user_from='$userLoggedIn' ORDER BY id DESC");
+		//Select all queries from messages where user is sender or recipient
+		$query = mysqli_query($this->con, "SELECT from_uid, to_uid FROM messages 
+										   WHERE to_uid='$userLoggedId' OR from_uid='$userLoggedId' 
+										   ORDER BY message_id DESC");
 
 		while($row = mysqli_fetch_array($query)) {
-			$user_to_push = ($row['user_to'] != $userLoggedIn) ? $row['user_to'] : $row['user_from'];
+			$user_to_push = ($row['to_uid'] != $userLoggedId) ? $row['to_uid'] : $row['from_uid'];
+
+			$user_push_query = mysqli_query($this->con, "SELECT user_name from usernames where user_id='$user_to_push'");
+			$username_row = mysqli_fetch_array($user_push_query);
+			$user_to_push = $username_row['user_name'];
 
 			if(!in_array($user_to_push, $convos)) {
 				array_push($convos, $user_to_push);
@@ -193,82 +207,6 @@ class Message {
 
 		return $return_string;
 
-	}
-
-	public function getConvosDropdown($data, $limit) {
-
-		$page = $data['page'];
-		$userLoggedIn = $this->user_obj->getUsername();
-		$return_string = "";
-		$convos = array();
-
-		if($page == 1)
-			$start = 0;
-		else 
-			$start = ($page - 1) * $limit;
-
-		$set_viewed_query = mysqli_query($this->con, "UPDATE messages SET viewed='yes' WHERE user_to='$userLoggedIn'");
-
-		$query = mysqli_query($this->con, "SELECT user_to, user_from FROM messages WHERE user_to='$userLoggedIn' OR user_from='$userLoggedIn' ORDER BY id DESC");
-
-		while($row = mysqli_fetch_array($query)) {
-			$user_to_push = ($row['user_to'] != $userLoggedIn) ? $row['user_to'] : $row['user_from'];
-
-			if(!in_array($user_to_push, $convos)) {
-				array_push($convos, $user_to_push);
-			}
-		}
-
-		$num_iterations = 0; //Number of messages checked 
-		$count = 1; //Number of messages posted
-
-		foreach($convos as $username) {
-
-			if($num_iterations++ < $start)
-				continue;
-
-			if($count > $limit)
-				break;
-			else 
-				$count++;
-
-
-			$is_unread_query = mysqli_query($this->con, "SELECT opened FROM messages WHERE user_to='$userLoggedIn' AND user_from='$username' ORDER BY id DESC");
-			$row = mysqli_fetch_array($is_unread_query);
-			$style = ($row['opened'] == 'no') ? "background-color: #DDEDFF;" : "";
-
-
-			$user_found_obj = new User($this->con, $username);
-			$latest_message_details = $this->getLatestMessage($userLoggedIn, $username);
-
-			$dots = (strlen($latest_message_details[1]) >= 12) ? "..." : "";
-			$split = str_split($latest_message_details[1], 12);
-			$split = $split[0] . $dots; 
-
-			$return_string .= "<a href='messages.php?u=$username'> 
-								<div class='user_found_messages' style='" . $style . "'>
-								<img src='" . $user_found_obj->getProfilePic() . "' style='border-radius: 5px; margin-right: 5px;'>
-								" . $user_found_obj->getFirstAndLastName() . "
-								<span class='timestamp_smaller' id='grey'> " . $latest_message_details[2] . "</span>
-								<p id='grey' style='margin: 0;'>" . $latest_message_details[0] . $split . " </p>
-								</div>
-								</a>";
-		}
-
-
-		//If posts were loaded
-		if($count > $limit)
-			$return_string .= "<input type='hidden' class='nextPageDropdownData' value='" . ($page + 1) . "'><input type='hidden' class='noMoreDropdownData' value='false'>";
-		else 
-			$return_string .= "<input type='hidden' class='noMoreDropdownData' value='true'> <p style='text-align: center;'>No more messages to load!</p>";
-
-		return $return_string;
-	}
-
-	public function getUnreadNumber() {
-		$userLoggedIn = $this->user_obj->getUsername();
-		$query = mysqli_query($this->con, "SELECT * FROM messages WHERE viewed='no' AND user_to='$userLoggedIn'");
-		return mysqli_num_rows($query);
 	}
 
 }

@@ -24,10 +24,12 @@
 } 
 ?>
 		<div class="user_details column">
+			<!-- user_image -->
             <div class="user-image">
                 <img src="<?php echo $user['profile_pic']; ?>"/>
             </div>
 			<br>
+			<!-- user_details -->
             <div class="user_details_left_right">
                 <a href='<?php echo $userLoggedIn;?>'><?php echo $user['first_name'].' '.$user['last_name']; ?></a>
                 <br>
@@ -44,7 +46,7 @@
 		<div class="main_column column" id="main_column">
 			<?php  
 			if($user_to != "new"){
-				echo "<h4>You and <a href='$user_to'>" .$user_to_obj->getFirstAndLastName() . "</a></h4><hr><br>";
+				echo "<h4><a href='$user_to'>" .$user_to_obj->getFirstAndLastName() . "</a></h4><hr><br>";
 
 				echo "<div class='loaded_messages' id='scroll_messages'>";
 					echo $message_obj->getMessages($user_to);
@@ -84,15 +86,16 @@
 				div.scrollTop = div.scrollHeight;
 			</script>
 
-		</div>
+			<hr>
+			<div  id="conversations">
+					<h4>Conversations</h4>
 
-	<!-- <div class="user_details column" id="conversations">
-			<h4>Conversations</h4>
-
-			<div class="loaded_conversations">
-				<?php echo $message_obj->getConvos(); ?>
+					<div class="loaded_conversations">
+						<?php echo $message_obj->getConvos(); ?>
+					</div>
+					<br>
 			</div>
-			<br>
-			<a href="messages.php?u=new">New Message</a>
-
-		</div> -->
+	</div>
+		<div class="user_details column" id="conversations" style="height: 40px;">
+				<a href="messages.php?u=new">New Message</a>
+		</div>

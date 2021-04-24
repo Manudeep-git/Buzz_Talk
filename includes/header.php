@@ -4,7 +4,6 @@
     include("includes/classes/User.php");
     include("includes/classes/Post.php");
     include("includes/classes/Message.php");
-    include("includes/classes/Notification.php");
 
     //include './form_handlers/update_profile_pictures.php';
     if(isset($_SESSION['username'])){
@@ -67,13 +66,13 @@
                 <i class="fas fa-user-friends"></i> 
                 Friends
             </a>
-            <a style="padding-right: 17px;" href="messages.php">
-                <i class="fab fa-facebook-messenger"></i>
-                Messages
-            </a>
-            <a style="padding-right: 17px;" href="#">
+            <a href="settings.php" style="padding-right: 17px;" href="#">
                 <i class="fas fa-user-cog"></i>
                 Settings
+            </a>
+            <a href="./includes/handlers/logout.php">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
             </a>
         </nav>
     </div>
@@ -92,9 +91,9 @@
                 </a>
             </nav>
             <nav>
-                <a href="./includes/handlers/logout.php">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Signout
+                <a href="messages.php" style="padding-right: 17px;" href="messages.php">
+                    <i class="fab fa-facebook-messenger"></i>
+                    Messages
                 </a>
             </nav>
         </div>

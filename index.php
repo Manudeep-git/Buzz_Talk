@@ -4,9 +4,7 @@
 
     if(isset($_POST['post'])){
         $uploadOk = 1;
-        echo "<script>console.log('$uploadOk')</script>";
         $imageName = $_FILES['fileToUpload']['name'];
-        echo "<script>console.log('$imageName')</script>";
         $errorMessage = "";
     
         if($imageName != "") {
@@ -22,7 +20,6 @@
             if(strtolower($imageFileType) != "jpeg" && strtolower($imageFileType) != "png" && strtolower($imageFileType) != "jpg") {
                 $errorMessage = "Sorry, only jpeg, jpg and png files are allowed";
                 $uploadOk = 0;
-                echo "<script>console.log('came inside here')</script>";
             }
     
             if($uploadOk) {
@@ -51,21 +48,19 @@
         header("Location: index.php");
     }
 ?>  
-        <div class="user_details column">
-            <div class="user-image">
-                <img src="<?php echo $user['profile_pic']; ?>"/>
-            </div>
-            <br>
-            <div class="user_details_left_right">
-                <a href='<?php echo $userLoggedIn;?>'><?php echo $user['first_name'].' '.$user['last_name']; ?></a>
+
+        <div class="card" style="width: 19%; float: left;">
+            <img src="<?php echo $user['profile_pic']?>" alt="...">
+            <div class="card-body">
+                <h5><a href='<?php echo $userLoggedIn;?>'><?php echo $user['first_name'].' '.$user['last_name']; ?></a></h5>
                 <br>
                 <?php 
                    $user_obj = new User($con,$userLoggedIn);
     
-                   echo "Followers:"." ".$user_obj->getFollowers()."<br>";
-                   echo "Following:"." ".$user_obj->getFollowing()."<br>";
-                   echo "Contents:"." ".$user_obj->getNumContents();
-                ?>   
+                   echo "<h5>Followers:"." ".$user_obj->getFollowers()."<br></h5>";
+                   echo "<h5>Following:"." ".$user_obj->getFollowing()."<br></h5>";
+                   echo "<h5>Contents:"." ".$user_obj->getNumContents()."</h5>";
+                ?> 
             </div>
         </div>
 
