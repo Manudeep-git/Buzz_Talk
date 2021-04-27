@@ -77,12 +77,17 @@ class User {
 										   FROM follows
 										   WHERE user_id='$userId'
 										   OR follower_id='$userId'");
+
 		while($row = mysqli_fetch_array($query)){
 			if($row['user_id'] === $userId){
-				array_push($this->friend_array,$row['follower_id']);
+				if(!in_array($row['follower_id'],$this->friend_array)){
+					array_push($this->friend_array,$row['follower_id']);
+				}
 			}
 			else if($row['follower_id'] === $userId){
-				array_push($this->friend_array,$row['user_id']);
+				if(!in_array($row['user_id'],$this->friend_array)){
+					array_push($this->friend_array,$row['user_id']);
+				}
 			}
 		}
 		array_push($this->friend_array,$userId);
@@ -177,32 +182,25 @@ class User {
 		
 	}
 
-	// //Not Looked at
-	// public function getMutualFriends($user_to_check) {
-	// 	$mutualFriends = 0;
-	// 	$user_array = $this->user['friend_array'];
-	// 	$user_array_explode = explode(",", $user_array);
-
-	// 	$query = mysqli_query($this->con, "SELECT friend_array FROM users WHERE username='$user_to_check'");
-	// 	$row = mysqli_fetch_array($query);
-	// 	$user_to_check_array = $row['friend_array'];
-	// 	$user_to_check_array_explode = explode(",", $user_to_check_array);
-
-	// 	foreach($user_array_explode as $i) {
-
-	// 		foreach($user_to_check_array_explode as $j) {
-
-	// 			if($i == $j && $i != "") {
-	// 				$mutualFriends++;
-	// 			}
-	// 		}
-	// 	}
-	// 	return $mutualFriends;
-
-	// }
+	public function getMutualFriends($searched_user_friends_array) {
+		$mutualFriends = 0;
+		$user_friends_array = $this->getFriendArray();
 
 
+		foreach($user_friends_array as $i) {
 
+			foreach($searched_user_friends_array as $j) {
+
+				if($i == $j) {
+					$mutualFriends++;
+				}
+			}
+		}
+		if($mutualFriends>2){
+			return $mutualFriends-2;
+		}
+		return 0;
+	}
 
 }
 

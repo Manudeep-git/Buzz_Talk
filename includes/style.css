@@ -25,7 +25,7 @@ body{
 .container{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 }
 
@@ -349,6 +349,11 @@ nav a:hover{
     float: left;
 }
 
+.search {
+	margin: 52px 20px 20% 26%;
+	width: 50%;
+}
+
 #settings_input {
 	border: 1px solid #ccc;
     height: 20px;
@@ -408,7 +413,7 @@ nav a:hover{
 }
 
 .comment_like {
-	background-color: transparent;
+	background-color: #fff;
 	border: none;
 	font-size: 14px;
 	color: #3498db;
@@ -423,4 +428,38 @@ nav a:hover{
 .like_value {
 	display: inline;
 	font-size: 14px;
+}
+
+
+.resultDisplay {
+	padding: 5px 5px 0 5px;
+	height: 70px;
+	border-bottom: 1px solid #D3D3D3;
+}
+.resultDisplay a {
+	float: none;
+}
+.resultDisplay:hover {
+	background-color: #EBEBEB;
+	text-decoration: none;
+}
+.liveSearchProfilePic img {
+	height: 50px;
+	border-radius: 25px;
+	margin: 1px 12px 0 2px;
+	float: left;
+}
+
+.liveSearchText {
+	background-color: transparent;
+	color: #1E96CA;
+}
+
+.liveSearchText p{
+	margin-left: 10px;
+	font-size: 12px;
+}
+
+.tab-content {
+	margin-top: 25px;
 }

@@ -17,12 +17,12 @@
 	<div class="card mb-3" style="max-width: 500px;">
   		<div class="row no-gutters">
     		<div class="col-md-4">
-				<img src="<?php echo $user['profile_pic']?>" alt="...">
+				<img src="<?php echo $user['profile_pic']?>" alt="..." class="small_profile_pic">
     		</div>
 			<div class="col-md-8">
 				<div class="card-body">
 					<h5 class="card-title"><?php echo ucfirst($username['user_name']) ?><h5>
-					<a href="#" class="btn btn-primary">Upload Profile picture</a>
+					<a href="upload.php" class="btn btn-primary">Upload Profile picture</a>
 				</div>
 			</div>
   		</div>

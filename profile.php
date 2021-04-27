@@ -35,7 +35,6 @@
 
  		<div class="profile_info">
  			<p><?php echo "Posts: " . $profile_user_obj->getNumContents(); ?></p>
- 			<!-- <p><?php echo "Likes: " . $user_array['num_likes']; ?></p> -->
  			<p><?php echo "Followers: " . $profile_user_obj-> getFollowers() ?></p>
              <p><?php echo "Following: " . $profile_user_obj-> getFollowing() ?></p>
  		</div>
@@ -68,8 +67,6 @@
         <ul class="nav nav-tabs" role="tablist" id="profileTabs">
             <li role="presentation" class="active"><a href="#newsfeed_div" aria-controls="newsfeed_div" role="tab" data-toggle="tab">
                 Newsfeed</a></li>
-            <!-- <li role="presentation"><a href="#messages_div" aria-controls="messages_div" role="tab" data-toggle="tab">
-            Messages</a></li> -->
         </ul>
 
         <div class="tab-content">

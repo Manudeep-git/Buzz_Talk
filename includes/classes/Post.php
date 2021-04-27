@@ -72,10 +72,6 @@ class Post {
 				$photo = $photo_row['photo'];
 			}
 
-			if($photo!=""){
-				echo "<script>console.log('$photo')</script>";
-			}
-
 			$added_by = $row['user_name'];
 			$date_time = $row['date_added'];
 
@@ -204,7 +200,7 @@ class Post {
 					$body = $postbody;
 				}
 
-				$added_by = ucfirst($added_by);
+				$added_by2 = ucfirst($added_by);
 
 				$str .= "<div class='status_post' id='$id'>
 							<div class='post_profile_pic'>
@@ -212,7 +208,7 @@ class Post {
 							</div>
 
 							<div class='posted_by' style='color:#ACACAC;'>
-								<a href='$added_by'> $added_by </a> &nbsp;&nbsp;&nbsp;&nbsp;$time_message
+								<a href='$added_by'> $added_by2 </a> &nbsp;&nbsp;&nbsp;&nbsp;$time_message
 								$delete_button
 							</div>
 							
@@ -257,8 +253,7 @@ class Post {
 	}
 	
 	public function loadProfilePosts($data) {
-
-		// $page = $data['page']; 
+		
 		$profile_user_obj = new User($this->con,$data);
 		$profile_user_id = $profile_user_obj->getUserId();
 		$userLoggedIn = $this->user_obj->getUsername();
@@ -323,11 +318,36 @@ class Post {
 
 
 				?>
+				<script>
+					$(document).ready(function () {
+							$('#<?php echo $id; ?>').on('click', () => {
+							
+							var target = $(event.target);
+							if (!target.is("a")) {
+								var element = document.getElementById("toggleComment<?php echo $id; ?>");
+
+								if(element.style.display == "block") 
+									element.style.display = "none";
+								else 
+									element.style.display = "block";
+							}
+						})
+					});
+				</script>
 				<?php
 
-				// $comments_check = mysqli_query($this->con, "SELECT * FROM comments WHERE post_id='$id'");
-				// $comments_check_num = mysqli_num_rows($comments_check);
+				//Check for comments for each post of users friends
+				$comments_check = mysqli_query($this->con, "SELECT * 
+															FROM comments 
+															WHERE content_id='$id' and removed=0");
+				$comments_check_num = mysqli_num_rows($comments_check);
 
+				//Check for likes for each post of users friends
+				$likes_check = mysqli_query($this->con, "SELECT * 
+															FROM likes 
+															WHERE content_id='$id'");
+
+				$likes_check_num = mysqli_num_rows($likes_check);
 
 				//Timeframe
 				$date_time_now = date("Y-m-d H:i:s");
@@ -395,13 +415,15 @@ class Post {
 					$body = $postbody;
 				}
 
+				$added_by2 = ucfirst($added_by);
+
 				$str .= "<div class='status_post' id='$id'>
 							<div class='post_profile_pic'>
 								<img src='$profile_pic' width='50'>
 							</div>
 
 							<div class='posted_by' style='color:#ACACAC;'>
-								<a href='$added_by'> $first_name $last_name </a> &nbsp;&nbsp;&nbsp;&nbsp;$time_message
+								<a href='$added_by'> $added_by2 </a> &nbsp;&nbsp;&nbsp;&nbsp;$time_message
 								$delete_button
 							</div>
 							<div id='post_body'>
@@ -411,7 +433,15 @@ class Post {
 								<br>
 								<br>
 							</div>
-							<p>For comments</p>
+
+							<div class='newsfeedPostOptions'>
+								<i class='fas fa-comment'></i>
+								Comments($comments_check_num)&nbsp;&nbsp;&nbsp;
+								<iframe src='likes.php?post_id=$id' id='like_iframe' scrolling='no'></iframe>
+							</div>
+						</div>
+						<div class='post_comment' id='toggleComment$id' style='display:none;'>
+								<iframe src='comments.php?post_id=$id' id='comment_iframe' frameborder='0'></iframe>
 						</div>
 						<hr>";
 

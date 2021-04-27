@@ -5,7 +5,6 @@
     include("includes/classes/Post.php");
     include("includes/classes/Message.php");
 
-    //include './form_handlers/update_profile_pictures.php';
     if(isset($_SESSION['username'])){
         $userLoggedIn = $_SESSION['username'];
         $userLoggedId = $_SESSION['user_id'];
@@ -49,23 +48,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js" 
     integrity="sha512-RdSPYh1WA6BF0RhpisYJVYkOyTzK4HwofJ3Q7ivt/jkpW6Vc8AurL1R+4AUcvn9IwEKAPm/fk7qFZW3OuiUDeg==" 
     crossorigin="anonymous"></script>
-    <!-- Axios Js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" 
-    integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" 
-    crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="layout_bar">
         <div class="logo">
             <a href="index.php">
-                BuzzTalk
+                BuzzTalk!
             </a>
         </div>
+
+
         <nav>
-            <a style="padding-right: 17px;" href="#">
-                <i class="fas fa-user-friends"></i> 
-                Friends
-            </a>
             <a href="settings.php" style="padding-right: 17px;" href="#">
                 <i class="fas fa-user-cog"></i>
                 Settings
@@ -78,6 +71,12 @@
     </div>
     <div class="top_bar">
         <div class="container">
+            <nav>
+                <a  href="search.php">
+                    <i class="fas fa-search"></i>
+                    Search
+                </a>
+            </nav>
             <nav>
                 <a  href="index.php">
                     <i class="fas fa-home"></i> 
