@@ -25,8 +25,8 @@
 ?>
 		<div class="user_details column">
 			<!-- user_image -->
-            <div class="user-image">
-                <img src="<?php echo $user['profile_pic']; ?>"/>
+            <div class="user-image" >
+                <img style="max-width: 130px;" src="<?php echo $user['profile_pic']; ?>"/>
             </div>
 			<br>
 			<!-- user_details -->
@@ -97,5 +97,5 @@
 			</div>
 	</div>
 		<div class="user_details column" id="conversations" style="height: 40px;">
-				<a href="messages.php?u=new">New Message</a>
+				<a id="new_message" style="max-width: 200px;"href="messages.php?u=new">New Message</a>
 		</div>

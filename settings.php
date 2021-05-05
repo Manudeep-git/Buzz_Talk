@@ -17,7 +17,7 @@
 	<div class="card mb-3" style="max-width: 500px;">
   		<div class="row no-gutters">
     		<div class="col-md-4">
-				<img src="<?php echo $user['profile_pic']?>" alt="..." class="small_profile_pic">
+				<img src="<?php echo $user['profile_pic']?>" alt="...">
     		</div>
 			<div class="col-md-8">
 				<div class="card-body">

@@ -20,6 +20,24 @@ class Post {
       
 		if($check_empty != "" || $imageName!= "") {//If it does not contain only spaces
 
+			//For videos
+			$body_array = preg_split("/\s+/",$check_empty);
+			$vide0_indicator = false;
+
+			foreach($body_array as $key => $value){
+				if(strpos($value,"www.youtube.com/watch?v=")!==false){
+					$vide0_indicator=true;
+					$link = preg_split("!&!", $value);
+					$value = preg_replace("!watch\?v=!", "embed/", $link[0]);
+					$value = "<br><iframe width=\'420\' height=\'315\' src=\'" . $value ."\'></iframe><br>";
+					$body_array[$key] = $value;
+				}
+			}
+
+			$check_empty = implode(" ", $body_array);
+
+			echo '<script>console.log("$check_empty")</script>';
+
 			//Current date and time
 			$date_added = date("Y-m-d H:i:s");
 			//Get userId
@@ -30,6 +48,9 @@ class Post {
 			$last_insert_id = mysqli_insert_id($this->con);//returns last insert id
 			if($imageName!=""){
 				$img_query = mysqli_query($this->con,"INSERT INTO photos VALUES('$last_insert_id','$imageName','$body')");
+			}
+			elseif($vide0_indicator){
+				$video_query = mysqli_query($this -> con,"INSERT INTO videos VALUES('last_insert_id','$check_empty')");
 			}
 			else{
 				$query2 = mysqli_query($this->con,"INSERT INTO posts VALUES('$last_insert_id','$body')");
@@ -57,11 +78,14 @@ class Post {
 
 			$posts_query = mysqli_query($this->con, "SELECT * FROM posts where content_id=$id;");
 			$images_query = mysqli_query($this->con, "SELECT * FROM photos WHERE content_id=$id");
+			$videos_query = mysqli_query($this->con, "SELECT * FROM videos WHERE content_id=$id");
 			$photo="";
 			$postbody="";
+			$videobody="";
 
 			$post_row = mysqli_fetch_array($posts_query);
 			$photo_row = mysqli_fetch_array($images_query);
+			$video_row = mysqli_fetch_array($videos_query);
 
 			if(mysqli_num_rows($posts_query)==1){
 				$postbody = $post_row['post_content'];
@@ -70,6 +94,10 @@ class Post {
 			if(mysqli_num_rows($images_query)==1){
 				$photo_quote = $photo_row['photo_quote'];
 				$photo = $photo_row['photo'];
+			}
+
+			if(mysqli_num_rows($videos_query)==1){
+				$videobody = $video_row['video'];
 			}
 
 			$added_by = $row['user_name'];
@@ -200,6 +228,10 @@ class Post {
 					$body = $postbody;
 				}
 
+				if($videobody!=""){
+					$body = $videobody;
+				}
+
 				$added_by2 = ucfirst($added_by);
 
 				$str .= "<div class='status_post' id='$id'>
@@ -301,7 +333,7 @@ class Post {
 				}
 
 				if($userLoggedIn == $added_by)
-					$delete_button = "<button class='delete_button btn-danger' id='post$id'>X</button>";
+					$delete_button = "<button class='delete_button btn-danger' id='post$id'>Delete</button>";
 				else 
 					$delete_button = "";
 
@@ -310,11 +342,6 @@ class Post {
 				$first_name = $row['first_name'];
 				$last_name = $row['last_name'];
 				$profile_pic = $row['profile_pic'];
-
-				if($userLoggedIn === $added_by)
-					$delete_button = "<button class='delete_button btn-danger' id='post$id'>Delete</button>";
-				else 
-					$delete_button = "";
 
 
 				?>

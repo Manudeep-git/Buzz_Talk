@@ -127,7 +127,8 @@ if(isset($_POST['register_button'])){
         
         //Inserting values into database
         $query = mysqli_query($con,
-            "INSERT INTO users values('','$fname','$lname','$reg_em','$b_date','$date','$reg_password',null,1);"               
+            "INSERT INTO users values('','$fname','$lname','$reg_em','$b_date','$date','$reg_password',
+                                './assets/images/Default Profile Pictures/head_emerald.png',1);"               
         );
 
 

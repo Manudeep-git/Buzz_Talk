@@ -2,6 +2,20 @@
 <head>
 	<title></title>
 	<link rel="stylesheet" type="text/css" href="./includes/style.css">
+	<!-- Jquery js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+     integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" 
+     crossorigin="anonymous">
+    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js" 
+    integrity="sha512-XKa9Hemdy1Ui3KSGgJdgMyYlUg1gM+QhL6cnlyTe2qzMCYm4nAZ1PsVerQzTTXzonUR+dmswHqgJPuwCq1MaAg==" 
+    crossorigin="anonymous">
+    </script>
+    <!-- Bootbox Js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js" 
+    integrity="sha512-RdSPYh1WA6BF0RhpisYJVYkOyTzK4HwofJ3Q7ivt/jkpW6Vc8AurL1R+4AUcvn9IwEKAPm/fk7qFZW3OuiUDeg==" 
+    crossorigin="anonymous"></script>
 </head>
 <body>
 	<?php  
@@ -58,8 +72,9 @@
 	<?php  
 	$get_comments = mysqli_query($con, "SELECT * 
 										FROM comments 
-										JOIN usernames USING(user_id)
-										WHERE content_id='$post_id' and removed=0
+										JOIN usernames ON comments.user_id = usernames.user_id
+										JOIN users ON comments.user_id = users.user_id
+										WHERE content_id='$post_id' and removed=0 and users.is_active=1
 										ORDER BY comment_id ASC");
 	$count = mysqli_num_rows($get_comments);
 
@@ -71,6 +86,7 @@
 			$commented_by = $comment['user_name'];
 			$date_added = $comment['created_at'];
 			$removed = $comment['removed'];
+			$id = $comment['comment_id'];
 
 			//Timeframe
 			$date_time_now = date("Y-m-d H:i:s");
@@ -128,16 +144,34 @@
 
 			$user_obj = new User($con, $commented_by);
 
+			if($userLoggedId === $comment['user_id'])
+					$delete_button = "<button class='delete_button btn-danger' id='comment$id'>Delete</button>";
+			else 
+					$delete_button = "";
+
 
 			?>
 			<div class="comment_section">
-
 				<a href="<?php echo $commented_by?>" target="_parent"><img src="<?php echo $user_obj->getProfilePic();?>" title="<?php echo $commented_by; ?>" style="float:left;" height="30"></a>
 				<a href="<?php echo $commented_by?>" target="_parent"> <b> <?php echo ucfirst($commented_by); ?> </b></a>
 				&nbsp;&nbsp;&nbsp;&nbsp; <?php echo $time_message . "<br>" . $comment_body; ?> 
+				<?php echo  $delete_button ?>
 				<hr>
-
 			</div>
+			<!-- Delete comment functinality -->
+			<script>
+				$(document).ready(() => {
+					$('#comment<?php echo $id; ?>').on('click', () => {
+							bootbox.confirm("Are you sure you want to delete this post?", (result) => {
+									console.log(<?php echo $id;?>);
+									$.post('./includes/handlers/delete_comment.php?comment_id=<?php echo $id;?>',{result: result});
+									console.log(result);
+									if(result)
+										location.reload();
+							});
+						});
+					});
+			</script>
 			<?php
 
 		}
