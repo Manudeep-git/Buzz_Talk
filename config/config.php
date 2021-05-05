@@ -13,10 +13,10 @@
     $active_group = 'default';
     $query_builder = TRUE;
     // Connect to DB
-    $conn = mysqli_connect($cleardb_server, $cleardb_username, $cleardb_password, $cleardb_db);
+    $con = mysqli_connect($cleardb_server, $cleardb_username, $cleardb_password, $cleardb_db);
 
 
-    $con = mysqli_connect("localhost","root","179601","social");
+    //$con = mysqli_connect("localhost","root","179601","social");
     
     if(mysqli_connect_errno()){
         echo "Failed to connect:".mysqli_connect_errno();
