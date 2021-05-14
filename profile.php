@@ -43,13 +43,13 @@
  			<?php 
                 $logged_in_user_obj = new User($con, $userLoggedIn); 
 
-                if($userLoggedIn != $username) {
+                if($userLoggedIn !== $username) {
 
                     if($logged_in_user_obj->isFollowing($profile_userId)) {
-                        echo '<input type="submit" name="remove_friend" class="danger" value="Unfollow"><br>';
+                        echo '<input type="submit" name="remove_friend" id="remove" class="danger" value="Unfollow"><br>';
                     }
                     else 
-                        echo '<input type="submit" name="add_friend" class="success" value="Follow"><br>';
+                        echo '<input type="submit" name="add_friend" id="add" class="success" value="Follow"><br>';
                 }
  			?>
  		</form>
@@ -110,6 +110,24 @@
         <script>
             var userLoggedIn = '<?php echo $userLoggedIn; ?>';
             var profileUsername = '<?php echo $username; ?>';
+            var follow = document.getElementById('add')
+            var unfollow = document.getElementById('remove')
+
+            if(unfollow){
+                unfollow.addEventListener('click',() => {
+                    console.log("unfollow clicked")
+                    unfollow.style.display='none';
+                    follow? follow.style.display="block":""
+                })
+            }
+
+            if(follow){
+                follow.addEventListener('click',() => {
+                    console.log("follow clicked")
+                    unfollow? unfollow.style.display='block': ""
+                    follow.style.display="none";
+                })
+            }
 
             $(document).ready(function() {
 
