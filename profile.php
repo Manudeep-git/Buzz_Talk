@@ -110,24 +110,7 @@
         <script>
             var userLoggedIn = '<?php echo $userLoggedIn; ?>';
             var profileUsername = '<?php echo $username; ?>';
-            var follow = document.getElementById('add')
-            var unfollow = document.getElementById('remove')
-
-            if(unfollow){
-                unfollow.addEventListener('click',() => {
-                    console.log("unfollow clicked")
-                    unfollow.style.display='none';
-                    follow? follow.style.display="block":""
-                })
-            }
-
-            if(follow){
-                follow.addEventListener('click',() => {
-                    console.log("follow clicked")
-                    unfollow? unfollow.style.display='block': ""
-                    follow.style.display="none";
-                })
-            }
+           
 
             $(document).ready(function() {
 
