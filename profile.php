@@ -31,7 +31,7 @@
  	</style>
 
     <div class="profile_left">
- 		<img src="<?php echo $user_obj->getProfilePic(); ?>">
+ 		<img src="<?php echo $profile_user_obj->getProfilePic(); ?>">
 
  		<div class="profile_info">
  			<p><?php echo "Posts: " . $profile_user_obj->getNumContents(); ?></p>
