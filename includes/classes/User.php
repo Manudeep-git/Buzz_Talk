@@ -172,13 +172,13 @@ class User {
 	public function unFollow($user_to_remove) {
 		$logged_in_user = $this->getUserId();
 
-		$query = mysqli_query($this->con, "DELETE FROM FOLLOWS WHERE user_id='$user_to_remove' and follower_id='$logged_in_user'");
+		$query = mysqli_query($this->con, "DELETE FROM follows WHERE user_id='$user_to_remove' and follower_id='$logged_in_user'");
 	}
 
 	public function follow($user_to_follow){
 		$logged_in_user = $this->getUserId();
 
-		$query = mysqli_query($this->con, "INSERT INTO FOLLOWS VALUES('$user_to_follow','$logged_in_user')");
+		$query = mysqli_query($this->con, "INSERT INTO follows VALUES('$user_to_follow','$logged_in_user')");
 		
 	}
 
