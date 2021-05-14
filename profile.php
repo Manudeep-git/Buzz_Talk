@@ -8,19 +8,6 @@
         $friends_count = count($friends_array)-1;
         $profile_userId = $profile_user_obj->getUserId();
     }
-
-    //unfollow previously following
-    if(isset($_POST['remove_friend'])) {
-        $user = new User($con, $userLoggedIn);
-        $user->unFollow($profile_userId);
-    }
-
-    if(isset($_POST['add_friend'])) {
-        $user = new User($con, $userLoggedIn);
-        $user->follow($profile_userId);
-    }
-
-
 ?>
     <style type="text/css">
 	 	.wrapper {
@@ -106,6 +93,19 @@
             </div>
            </div>
         </div>
+
+	<?php 
+		    //unfollow previously following
+		    if(isset($_POST['remove_friend'])) {
+			$user = new User($con, $userLoggedIn);
+			$user->unFollow($profile_userId);
+		    }
+
+		    if(isset($_POST['add_friend'])) {
+			$user = new User($con, $userLoggedIn);
+			$user->follow($profile_userId);
+		    }
+	?>
     
         <script>
             var userLoggedIn = '<?php echo $userLoggedIn; ?>';
